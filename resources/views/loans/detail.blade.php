@@ -8,6 +8,11 @@
     <a href="{{ route('loans.index') }}" class="text-black font-bold py-2 px-4 ">
         < Back to Loans
     </a>
+    <a href="{{ route('loans.detailPdf', $loan->id) }}" class="ml-5">
+        <button class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-green-200">
+            <i class="fa-solid fa-file-pdf"></i> Print Pdf
+        </button>
+    </a>
     <h1 class="text-2xl font-bold">Loan Details</h1>
     <div class="mt-6 bg-white p-6 rounded-lg shadow">
         <table class="table-auto w-full text-sm">

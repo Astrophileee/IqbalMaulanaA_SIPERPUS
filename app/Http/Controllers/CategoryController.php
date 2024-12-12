@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
+use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -77,5 +78,14 @@ class CategoryController extends Controller
     {
         $category->delete();
         return redirect()->route('categories.index')->with('success', 'Category deleted successfully!');
+    }
+
+    public function generatePDF(){
+
+        $categories = Category::all();
+        $pdf = FacadePdf::loadView('categories.pdf', ['categories' => $categories]);
+
+        return $pdf->download('tableCategories.pdf');
+
     }
 }

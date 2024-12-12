@@ -48,12 +48,14 @@
                             Returns
                         </a>
                     </li>
-                    <li class="mb-2">
-                        <a href="/users" class="py-2 px-4 rounded hover:bg-gray-700 flex items-center">
-                            <i class="fa-solid fa-user mr-3"></i>
-                            Users
-                        </a>
-                    </li>
+                    @if(auth()->user()->hasRole('admin'))
+                        <li class="mb-2">
+                            <a href="/users" class="py-2 px-4 rounded hover:bg-gray-700 flex items-center">
+                                <i class="fa-solid fa-user mr-3"></i>
+                                Users
+                            </a>
+                        </li>
+                    @endif
                 </ul>
             </ul>
         </nav>

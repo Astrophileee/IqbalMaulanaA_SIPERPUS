@@ -11,6 +11,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 class LoanController extends Controller
 {
@@ -130,5 +131,42 @@ class LoanController extends Controller
         $loan->save();
 
         return response()->json(['success' => true, 'message' => 'Loan returned successfully!']);
+    }
+
+    public function generatePDF(){
+
+        $loans = Loan::with(['member', 'user', 'loanDetails.book', 'returnBooks'])->get();
+        $pdf = FacadePdf::loadView('loans.pdf', ['loans' => $loans]);
+
+        return $pdf->download('tableLoans.pdf');
+
+    }
+    public function generateDetailPDF(Loan $loan)
+    {
+        $loan->load(['member', 'user', 'loanDetails.book', 'returnBooks']);
+
+        $books = $loan->loanDetails->pluck('book');
+        $bookIds = $books->pluck('id');
+
+        $memberName = $loan->member ? $loan->member->name : 'Unknown Member';
+        $loanDate = \Carbon\Carbon::parse($loan->date)->format('Y-m-d');
+
+        $filename = str_replace(' ', '_', $memberName) . '_loan_' . $loanDate . '.pdf';
+
+        $pdf = FacadePdf::loadView('loans.detailPdf', [
+            'loan' => $loan,
+            'books' => $books,
+            'bookIds' => $bookIds,
+        ]);
+
+        return $pdf->download($filename);
+    }
+    public function generateReturnsPDF(){
+
+        $loans = Loan::with(['member', 'user', 'loanDetails.book', 'returnBooks'])->where('status', 'returned')->get();
+        $pdf = FacadePdf::loadView('loans.Returnspdf', ['loans' => $loans]);
+
+        return $pdf->download('tableReturns.pdf');
+
     }
 }

@@ -7,6 +7,7 @@ use App\Http\Requests\StoreMemberRequest;
 use App\Http\Requests\UpdateMemberRequest;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 class MemberController extends Controller
 {
@@ -77,5 +78,14 @@ class MemberController extends Controller
     {
         $member->delete();
         return redirect()->route('members.index')->with('success', 'Member deleted successfully!');
+    }
+
+    public function generatePDF(){
+
+        $members = Member::all();
+        $pdf = FacadePdf::loadView('members.pdf', ['members' => $members]);
+
+        return $pdf->download('tableMembers.pdf');
+
     }
 }

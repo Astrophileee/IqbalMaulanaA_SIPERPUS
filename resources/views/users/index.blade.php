@@ -4,8 +4,13 @@
 
 @section('content')
 
-    <div class="flex justify-between mt-4">
+    <div class="flex mt-4">
         <h1 class="text-lg font-semibold">Users</h1>
+        <a href="{{ route('users.Pdf') }}" class="ml-5">
+            <button class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-green-200">
+                <i class="fa-solid fa-file-pdf"></i> Print Pdf
+            </button>
+        </a>
     </div>
 
     <table id="usersTable" class="min-w-full divide-y divide-gray-200 text-sm datatable mt-4">
@@ -14,6 +19,7 @@
                 <th scope="col" class="px-6 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">No</th>
                 <th scope="col" class="px-6 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Name</th>
                 <th scope="col" class="px-6 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                <th scope="col" class="px-6 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Role</th>
                 <th scope="col" class="px-6 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Action</th>
             </tr>
         </thead>
@@ -23,6 +29,15 @@
                     <td class="px-6 py-4 whitespace-nowrap">{{ $loop->iteration }}</td>
                     <td class="px-6 py-4 whitespace-nowrap">{{ $user->name }}</td>
                     <td class="px-6 py-4 whitespace-nowrap">{{ $user->email }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <select class="role-dropdown border border-gray-300 rounded-md px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-28" data-user-id="{{ $user->id }}">
+                            @foreach ($roles as $role)
+                                <option value="{{ $role->name }}" {{ $user->roles->contains('name', $role->name) ? 'selected' : '' }}>
+                                    {{ $role->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </td>
                     <td class="px-6 py-4 whitespace-nowrap">
                         <form id="deleteForm{{ $user->id }}" action="{{ route('users.destroy', $user) }}" method="POST">
                             @csrf
@@ -40,6 +55,40 @@
     </table>
 
     <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const roleDropdowns = document.querySelectorAll('.role-dropdown');
+
+            roleDropdowns.forEach(dropdown => {
+                dropdown.addEventListener('change', function () {
+                    const userId = this.dataset.userId;
+                    const role = this.value;
+
+                    fetch('{{ route('users.updateRole') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            user_id: userId,
+                            role: role
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire('Success', data.message, 'success');
+                        } else {
+                            Swal.fire('Error', 'Something went wrong!', 'error');
+                        }
+                    })
+                    .catch(error => {
+                        Swal.fire('Error', 'Something went wrong!', 'error');
+                    });
+                });
+            });
+        });
+
         function confirmDelete(userId) {
             Swal.fire({
                 title: 'Are you sure?',

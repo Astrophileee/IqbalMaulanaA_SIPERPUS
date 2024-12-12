@@ -7,6 +7,7 @@ use App\Http\Requests\StoreBookshelfRequest;
 use App\Http\Requests\UpdateBookshelfRequest;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 class BookshelfController extends Controller
 {
@@ -77,5 +78,14 @@ class BookshelfController extends Controller
     {
         $bookshelf->delete();
         return redirect()->route('bookshelves.index')->with('success', 'Bookshelf deleted successfully!');
+    }
+
+    public function generatePDF(){
+
+        $bookshelves = Bookshelf::all();
+        $pdf = FacadePdf::loadView('bookshelves.pdf', ['bookshelves' => $bookshelves]);
+
+        return $pdf->download('tableBookshelves.pdf');
+
     }
 }

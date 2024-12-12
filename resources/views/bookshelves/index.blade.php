@@ -4,10 +4,15 @@
 
 @section('content')
 
-    <div class="flex justify-between mt-4">
+    <div class="flex mt-4">
         <a href="{{ route('bookshelves.create') }}">
             <button class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-green-200">
                 + Add Bookshelf
+            </button>
+        </a>
+        <a href="{{ route('bookshelves.pdf') }}" class="ml-5">
+            <button class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-green-200">
+                <i class="fa-solid fa-file-pdf"></i> Print Pdf
             </button>
         </a>
     </div>

@@ -10,6 +10,7 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Storage;
+use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 
 class BookController extends Controller
@@ -116,5 +117,14 @@ class BookController extends Controller
     {
         $book->delete();
         return redirect()->route('books.index')->with('success', 'book deleted successfully!');
+    }
+
+    public function generatePDF(){
+
+        $books = Book::with(['categories', 'bookshelf'])->get();;
+        $pdf = FacadePdf::loadView('books.pdf', ['books' => $books]);
+
+        return $pdf->download('tableBooks.pdf');
+
     }
 }
