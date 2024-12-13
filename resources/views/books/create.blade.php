@@ -114,7 +114,7 @@
                 <div id="categories-container">
                     <label for="categories" class="block text-sm font-medium text-gray-700">Categories</label>
                     <select id="categories" name="categories[]"
-                        class="category-select mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm" required>
+                        class="category-select mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm">
                         <option value="" disabled selected>Select Categories</option>
                             @foreach ($categories as $category)
                                 <option value="{{ $category->id }}">{{ $category->category }}</option>
@@ -136,80 +136,59 @@
     </div>
 
     <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const categoriesContainer = document.getElementById('categories-container');
-    const categories = @json($categories);
-    let selectedCategories = [];
+                document.addEventListener('DOMContentLoaded', function () {
+                    const categoriesContainer = document.getElementById('categories-container');
+                    let selectedCategories = [];
 
-    function initializeDropdowns() {
-        updateSelectedCategories();
-        updateDropdownOptions();
-    }
+                    function initializeDropdowns() {
+                        updateSelectedCategories();
+                        updateDropdownOptions();
+                }
 
-    // Event listener untuk perubahan pada dropdown
-    categoriesContainer.addEventListener('change', function (e) {
-        if (e.target && e.target.matches('select.category-select')) {
-            updateSelectedCategories();
-            updateDropdownOptions();
+            categoriesContainer.addEventListener('change', function (e) {
+                if (e.target && e.target.matches('select.category-select')) {
+                    updateSelectedCategories();
+                    updateDropdownOptions();
 
-            const selects = Array.from(categoriesContainer.querySelectorAll('select.category-select'));
-            const allFilled = selects.every(select => select.value);
+                    const selects = Array.from(categoriesContainer.querySelectorAll('select.category-select'));
+                    const allFilled = selects.every(select => select.value);
 
-            if (allFilled && !selects.some(select => select.options.length <= 1)) {
-                addNewCategoryDropdown();
-            }
-        }
-    });
-
-    function updateSelectedCategories() {
-        const selects = Array.from(categoriesContainer.querySelectorAll('select.category-select'));
-        selectedCategories = selects
-            .map(select => select.value)
-            .filter(value => value);
-    }
-
-    function updateDropdownOptions() {
-        const selects = Array.from(categoriesContainer.querySelectorAll('select.category-select'));
-
-        selects.forEach(select => {
-            const currentValue = select.value;
-            select.querySelectorAll('option').forEach(option => {
-                if (selectedCategories.includes(option.value) && option.value !== currentValue) {
-                    option.disabled = true;
-                } else {
-                    option.disabled = false;
+                    if (allFilled && !selects.some(select => select.options.length <= 1)) {
+                        addNewCategoryDropdown();
+                    }
                 }
             });
+
+            function updateSelectedCategories() {
+                const selects = Array.from(categoriesContainer.querySelectorAll('select.category-select'));
+                selectedCategories = selects
+                    .map(select => select.value)
+                    .filter(value => value);
+            }
+
+            function updateDropdownOptions() {
+                const selects = Array.from(categoriesContainer.querySelectorAll('select.category-select'));
+
+                selects.forEach(select => {
+                    const currentValue = select.value;
+                    select.querySelectorAll('option').forEach(option => {
+                        if (selectedCategories.includes(option.value) && option.value !== currentValue) {
+                            option.disabled = true;
+                        } else {
+                            option.disabled = false;
+                        }
+                    });
+                });
+            }
+
+            function addNewCategoryDropdown() {
+                const newSelect = categoriesContainer.querySelector('select.category-select').cloneNode(true);
+                newSelect.value = '';
+                categoriesContainer.appendChild(newSelect);
+                updateDropdownOptions();
+            }
+            initializeDropdowns();
         });
-    }
-
-    function addNewCategoryDropdown() {
-        const newSelect = document.createElement('select');
-        newSelect.name = 'categories[]';
-        newSelect.classList.add('category-select', 'mt-1', 'block', 'w-full', 'border', 'border-gray-300', 'rounded-md', 'shadow-sm', 'focus:ring-green-500', 'focus:border-green-500', 'sm:text-sm');
-
-        const firstOption = document.createElement('option');
-        firstOption.value = '';
-        firstOption.disabled = true;
-        firstOption.selected = true;
-        firstOption.textContent = 'Select Category';
-        newSelect.appendChild(firstOption);
-
-        categories.forEach(category => {
-            const option = document.createElement('option');
-            option.value = category.id;
-            option.textContent = category.category;
-            newSelect.appendChild(option);
-        });
-
-        categoriesContainer.appendChild(newSelect);
-        updateDropdownOptions();
-    }
-
-    initializeDropdowns();
-});
-
-
 
     </script>
 @endsection

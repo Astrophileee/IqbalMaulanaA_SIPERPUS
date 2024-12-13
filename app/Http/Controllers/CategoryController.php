@@ -76,8 +76,13 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
+        if ($category->books()->count() > 0) {
+            return redirect()->route('categories.index')
+                        ->with('error', 'Category cannot be deleted because it is still used by books.');
+        }
         $category->delete();
-        return redirect()->route('categories.index')->with('success', 'Category deleted successfully!');
+        return redirect()->route('categories.index')
+                        ->with('success', 'Category deleted successfully!');
     }
 
     public function generatePDF(){

@@ -56,7 +56,7 @@
             @foreach ($books as $book)
                 <tr>
                     <td class="px-6 py-4 whitespace-nowrap">{{ $loop->iteration }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">{{ ucwords(strtolower($book->title)) }}</td>
+                    <td class="px-6 py-4">{{ ucwords(strtolower($book->title)) }}</td>
                     <td class="px-6 py-4 whitespace-nowrap">{{ ucwords(strtolower($book->author)) }}</td>
                     <td class="px-6 py-4 whitespace-nowrap">{{ ucwords(strtolower($book->year)) }}</td>
                     <td class="px-6 py-4 whitespace-nowrap">{{ ucwords(strtolower($book->publisher)) }}</td>

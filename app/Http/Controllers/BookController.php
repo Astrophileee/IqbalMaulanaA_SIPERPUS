@@ -115,8 +115,13 @@ class BookController extends Controller
      */
     public function destroy(Book $book)
     {
+        if ($book->loans()->count() > 0) {
+            return redirect()->route('books.index')
+                            ->with('error', 'Book cannot be deleted because it is still used by loan.');
+        }
         $book->delete();
-        return redirect()->route('books.index')->with('success', 'book deleted successfully!');
+        return redirect()->route('books.index')
+                        ->with('success', 'Book deleted successfully!');
     }
 
     public function generatePDF(){

@@ -38,7 +38,7 @@
             @foreach ($bookshelves as $bookshelf)
                 <tr>
                     <td class="px-6 py-4 whitespace-nowrap">{{ $loop->iteration }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">{{ ucwords(strtolower($bookshelf->code)) }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">{{ strtoupper($bookshelf->code) }}</td>
                     <td class="px-6 py-4 whitespace-nowrap">{{ ucwords(strtolower($bookshelf->name)) }}</td>
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="flex space-x-2">
